@@ -116,6 +116,10 @@
       cork.prepend(d); const e = $('.empty-cork', cork); if (e) e.remove();
     };
     store.get('mynotes', []).forEach((n) => pinNote(n[0], n[1], n[2], true));
+    // notes you approved: edit notes.json in the repo, one {"line": "...", "who": "..."} per note
+    fetch('/notes.json', { cache: 'no-store' }).then((r) => (r.ok ? r.text() : '[]')).then((t) => JSON.parse(t.replace(/,\s*\]\s*$/, ']'))).then((list) => {
+      (Array.isArray(list) ? list : []).slice().reverse().forEach((n, i) => { if (n && n.line) pinNote(n.line, n.who || 'no name', ((i * 37) % 7) - 3, false); });
+    }).catch(() => {});
     $$('.tab', say).forEach((t) => t.addEventListener('click', () => {
       $$('.tab', say).forEach((x) => x.setAttribute('aria-selected', x === t ? 'true' : 'false'));
       $$('form.f', say).forEach((f) => { f.hidden = f.dataset.k !== t.dataset.k; });
@@ -140,6 +144,7 @@
         try {
           const payload = Object.assign({ _subject: 'the room: ' + (kinds[k] || k) + (data.ticket ? ', ' + data.ticket : ''), _template: 'table', _captcha: 'false', form: kinds[k] || k, page: location.href }, data);
           if (data.email) payload._replyto = data.email;
+          if (k !== 'work') payload.to_approve_paste_this_into_notes_json = JSON.stringify({ line: data.line || data.idea || '', who: data.who || 'no name' }) + ',';
           const r = await fetch(G.inbox, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(payload) });
           const j = await r.json().catch(() => ({}));
           ok = r.ok && String(j.success) !== 'false';
