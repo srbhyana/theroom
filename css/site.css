@@ -523,3 +523,4 @@ body.mountain{background:linear-gradient(180deg,rgba(15,23,36,.82),rgba(15,23,36
 .pcard.wait{align-self:start}
 body.deskp{background:linear-gradient(180deg,rgba(23,20,15,.88),rgba(23,20,15,.97) 55%),url(/img/ladakh/window-flowers.jpg) center/cover fixed,#17140F}
 @media (max-width:900px){body.deskp{background-attachment:scroll}}
+.wcard{scroll-margin-top:96px}

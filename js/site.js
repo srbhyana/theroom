@@ -98,8 +98,11 @@
     const B = JSON.parse($('#books').textContent); const info = $('.bookinfo');
     shelf.addEventListener('click', (e) => {
       const b = e.target.closest('.book'); if (!b) return;
-      $$('.book', shelf).forEach((x) => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
       const d = B[Number(b.dataset.i)];
+      // second click on the same book opens it
+      if (b.getAttribute('aria-pressed') === 'true' && d[9]) { if (/^http/.test(d[9])) window.open(d[9], '_blank', 'noopener'); else location.href = d[9]; return; }
+      $$('.book', shelf).forEach((x) => x.setAttribute('aria-pressed', x === b ? 'true' : 'false'));
+      const bo = $('.bo', info); if (bo) { bo.href = d[9]; if (/^http/.test(d[9])) { bo.target = '_blank'; bo.rel = 'noopener'; } else { bo.removeAttribute('target'); } }
       $('.bs', info).textContent = d[1] + ' · ' + d[2]; $('.n', info).textContent = d[0]; $('.bw', info).textContent = d[3]; $('.bk', info).textContent = d[4];
     });
   }
